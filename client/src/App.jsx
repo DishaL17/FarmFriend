@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import Home  from "./pages/home/home";
-import Login from "./pages/home/login";
-import Register from "./pages/home/register";
+import Home  from "./pages/home";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import Dashboard from "./pages/dashboard"
+import Weather from "./pages/weather"
 
 function App() {
   return (
@@ -11,6 +13,8 @@ function App() {
       <Route path="/login" element={<Login />} />
 
       <Route path="/register" element={<Register />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/weather" element={<Weather />} />
     </Routes>
   );
 }

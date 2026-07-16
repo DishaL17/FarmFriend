@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "../../components/navbar/navbar";
+import Navbar from "../components/navbar/navbar";
 export default function Login(){
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
