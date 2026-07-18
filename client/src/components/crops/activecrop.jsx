@@ -1,20 +1,53 @@
-import { FaChartPie } from "react-icons/fa";
-import Cropcard from "./Cropcard";
-export default function ActiveCrops(){
-return (
-<div >
-    <div className="flex justify-between text-white font-medium text-xl"> 
-        <h1>Active crops</h1>
-        <span >+</span>
-    </div>
-    <div className="flex flex-col">
-        <Cropcard Crop="Wheat" area="7 acre" date="17 july" />
-        <Cropcard Crop="Potato" area="3 acre" date="13 sept " />
-    </div>
-    <div>
-       <span className="flex items-center  text-white text-xl"> < FaChartPie className=" mr-2 " /> Status</span>
-    </div>
-</div>
+import { FaChartPie, FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-);
+import Cropcard from "./Cropcard";
+import { fetchCrops } from "../../api/crop";
+
+export default function ActiveCrops() {
+  const navigate = useNavigate();
+  const [crops, setCrops] = useState([]);
+
+  useEffect(() => {
+    loadCrops();
+  }, []);
+
+  async function loadCrops() {
+    try {
+      const data = await fetchCrops();
+
+      if (data.success) {
+        setCrops(data.crops);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex justify-between items-center text-white text-xl mb-4">
+        <h1>Active Crops</h1>
+
+        <button
+          onClick={() => navigate("/add-crop")}
+          className="bg-lime-600 p-2 rounded-lg hover:bg-green-700"
+        >
+          <FaPlus />
+        </button>
+      </div>
+
+     
+
+      <div className="space-y-4">
+        {crops.map((crop) => (
+          <Cropcard
+            key={crop._id}
+            crop={crop}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }

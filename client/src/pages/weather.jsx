@@ -8,6 +8,7 @@ import WeeklyForecast from "../components/weather/weeklyforecast";
 
 export default function Dashboard() {
   const [weather, setWeather] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function loadWeather() {
@@ -21,10 +22,13 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-lime-50">
-      <Sidebar />
+      <Sidebar
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
 
       <main className="flex-1 flex flex-col w-full overflow-x-hidden ">
-        <Nav />
+        <Nav setIsSidebarOpen={setIsSidebarOpen} />
 
         <section className="flex flex-col xl:flex-row gap-6 p-6">
           <div className="w-full xl:w-2/3">

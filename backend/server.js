@@ -6,6 +6,9 @@ import jwt from "jsonwebtoken"
 
 import connectDB from "./config/db.js";
 import User from "./models/user.js";
+import Crop from "./models/Crop.js";
+import Transaction from "./models/Transaction.js"
+import crop from "./models/Crop.js";
 
 dotenv.config();
 connectDB();
@@ -62,8 +65,100 @@ app.post("/register", async (req, res) => {
 
 });
 
+app.post("/addcrop", async (req, res) => {
+  try {
+    const { crop, area, date } = req.body;
+
+    const newCrop = new Crop({
+      crop,
+      area,
+      date,
+    });
+
+    await newCrop.save();
+
+    res.json({
+      success: true,
+      message: "Crop added successfully",
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
+
+app.get("/crops", async (req, res) => {
+  try {
+    const crops = await Crop.find();
+
+    res.json({
+      success: true,
+      crops,
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch crops",
+    });
+  }
+});
+
+app.post("/addtransaction", async (req, res) => {
+  try {
+    const { name, type, amount, crop } = req.body;
+
+    const newTransaction = new Transaction({
+      crop: crop || "General",
+      name,
+      type,
+      amount,
+    });
+
+
+    await newTransaction.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Transaction added successfully",
+      transaction: newTransaction,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
+
+app.get("/transactions", async (req, res) => {
+  try {
+    const transactions = await Transaction.find().sort({ date: -1 });
+
+    res.json({
+      success: true,
+      transactions,
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch transactions",
+    });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

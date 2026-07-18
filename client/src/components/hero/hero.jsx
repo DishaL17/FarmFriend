@@ -12,7 +12,7 @@ export default function Hero() {
   useEffect(() => {
     async function loadWeather() {
       try {
-        const data = await fetchWeather("Bhopal");
+        const data = await fetchWeather("Indore");
         console.log(data); // check that daily exists
         setWeather(data);
       } catch (error) {
@@ -32,7 +32,7 @@ export default function Hero() {
 
       {/* Right Side */}
       <div className="w-full xl:w-1/3 flex flex-col gap-6">
-        <div className="bg-gradient-to-b from-green-900 via-emerald-800 to-emerald-500 rounded-2xl shadow-md p-4">
+        <div className="bg-gradient-to-b from-lime-800 via-lime-700 to-lime-500 rounded-2xl shadow-md p-4">
           <ActiveCrops />
         </div>
 

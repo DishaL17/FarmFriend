@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import Home  from "./pages/home";
+import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import Dashboard from "./pages/dashboard"
-import Weather from "./pages/weather"
+import Dashboard from "./pages/dashboard";
+import Weather from "./pages/weather";
+import AddCropPage from "./components/crops/AddCropPage";   
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/weather" element={<Weather />} />
+      <Route path="/add-crop" element={<AddCropPage />} />
     </Routes>
   );
 }

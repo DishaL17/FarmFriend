@@ -8,9 +8,13 @@ import {
   FaTractor,
   FaCog
 } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 
 
-export default function Sidebar() {
+export default function Sidebar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}) {
   const sidebarItems = [
     { name: "Dashboard", icon: FaHome, path: "/dashboard" },
     { name: "My Crops", icon: FaSeedling, path: "/crops" },
@@ -22,11 +26,28 @@ export default function Sidebar() {
   ];
 
   return (
-<aside className="hidden lg:flex lg:flex-col w-64 h-screen bg-gradient-to-b from-lime-900 via-lime-800 to-lime-500 ">
-      <h1 className="text-2xl sm:text-2xl font-bold text-white flex justify-center mt-4">
-        🌾 FarmFriend
-      </h1>
+<aside
+  className={`
+    fixed top-0 left-0 z-50 h-screen w-64
+    bg-gradient-to-b from-lime-900 via-lime-800 to-lime-500
+    transform transition-transform duration-300
+    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+    lg:translate-x-0 lg:static lg:flex lg:flex-col
+  `}
+>
+ <div className="relative">
+  <h1 className="text-2xl font-bold text-white p-4">
+    🌾 FarmFriend
+  </h1>
 
+  <button
+    onClick={() => setIsSidebarOpen(false)}
+    className="lg:hidden absolute top-4 right-4 text-white text-2xl"
+  >
+    <FaTimes />
+  </button>
+</div>
+      
       <nav className="mt-16 space-y-2">
   {sidebarItems.map((item) => {
     const Icon = item.icon;
