@@ -4,6 +4,7 @@ import {
   FaWallet,
   FaMoneyBillWave,
   FaSeedling,
+  FaPlus,
 } from "react-icons/fa6";
 
 export default function Finance({ transactions = [], crops = [] }) {
@@ -51,9 +52,21 @@ export default function Finance({ transactions = [], crops = [] }) {
   });
 
   return (
+    <section>
+      <div className="flex justify-between items-center text-slate-800 text-xl font-bold px-3">
+                  <h2>Financial Overview</h2>
+                  <button
+                    onClick={() => setIsTransactionModalOpen(true)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  >
+                    <FaPlus className="text-xs" />
+                    Add Transaction
+                  </button>
+                </div>
+
     <div className="space-y-6">
       {/* Finance Cards Grid */}
-      <div className=" flex-wrap sm:flex gap-6 m-3 ">
+      <div className=" flex-wrap sm:flex gap-6 m-1 items-center justify-between ">
         <FinanceCard
           title="Income"
           amount={totalIncome}
@@ -84,5 +97,6 @@ export default function Finance({ transactions = [], crops = [] }) {
 
      
     </div>
+    </section>
   );
 }

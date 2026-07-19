@@ -147,7 +147,7 @@ const condition = getWeatherCondition(weather.current.weather_code);
         </div>
 
        
-       <div className="mt-6 overflow-x-auto">
+       <div className="mt-6 overflow-y-auto scrollbar-thin scrollbar-thumb-white/40 scrollbar-track-white/10">
     <HourlyForecast forecast={weather.hourly}/>
 </div>
       </div>

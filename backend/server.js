@@ -8,7 +8,6 @@ import connectDB from "./config/db.js";
 import User from "./models/user.js";
 import Crop from "./models/Crop.js";
 import Transaction from "./models/Transaction.js"
-import crop from "./models/Crop.js";
 
 dotenv.config();
 connectDB();
@@ -19,26 +18,54 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/login", async (req, res) => {
+  try {
     const { phone, password } = req.body;
-    const user = await User.findOne({ phone });
-    const isMatch = await bcrypt.compare(password, user.password);
-    if(isMatch){
-        const token = jwt.sign(
-         { id: user._id },
-         process.env.JWT_SECRET,
-         { expiresIn: "7d" }
-);
-    }
-   
-    res.json({
-  success: true,
-  token,
-  user: {
-    name: user.name,
-    phone: user.phone,
-  },
-});
 
+    // Find user
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Send response
+    res.json({
+      success: true,
+      token,
+      user: {
+        name: user.name,
+        phone: user.phone,
+      },
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
 });
 
 app.post("/register", async (req, res) => {
@@ -153,6 +180,29 @@ app.get("/transactions", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch transactions",
+    });
+  }
+});
+
+app.get("/api/mandi/:commodity", async (req, res) => {
+  try {
+    const commodity = req.params.commodity;
+
+    const url =
+      `https://api.data.gov.in/resource/35985678-0d79-46b4-9ed6-6f13308a1d24` +
+      `?api-key=${process.env.AGMARK_API_KEY}` +
+      `&format=json` +
+      `&limit=20` +
+      `&filters[Commodity]=${encodeURIComponent(commodity)}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    res.json(data.records);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: err.message,
     });
   }
 });

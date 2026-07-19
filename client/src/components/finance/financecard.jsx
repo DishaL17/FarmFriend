@@ -7,16 +7,17 @@ export default function FinanceCard({
   iconColor,
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-2 m-2 flex justify-between items-center">
-      <div>
-        <p className="text-gray-500">{title}</p>
-        <h2 className="text-3xl font-bold">₹{amount}</h2>
+    <div className="bg-white rounded-2xl shadow-md p-2 m-2  w-39 justify-between items-center flex flex-col">
+      <div className="flex">
+        <p className="text-gray-500 ">{title}</p>
+        <div className={`p-2 ml-4 rounded-full ${bgColor}`}>
+        <span className={iconColor}>{icon}</span>
+       </div>
+        
        
       </div>
-
-      <div className={`p-4 rounded-full ${bgColor}`}>
-        <span className={iconColor}>{icon}</span>
-      </div>
+    <h2 className="text-xl font-bold">₹{amount}</h2>
+      
     </div>
   );
 }

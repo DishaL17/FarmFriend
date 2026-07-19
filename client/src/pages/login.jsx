@@ -1,15 +1,20 @@
 import { useState } from "react";
 import Navbar from "../components/navbar/navbar";
+import { useNavigate } from "react-router-dom";
+
 export default function Login(){
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
- async function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
-   if (phone.length !== 10) {
+
+  if (phone.length !== 10) {
     alert("Enter a valid 10-digit phone number");
     return;
   }
+
   try {
     const response = await fetch("http://localhost:5000/login", {
       method: "POST",
@@ -21,16 +26,20 @@ export default function Login(){
         password,
       }),
     });
+
     const data = await response.json();
-   if (data.success) {
-  localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-  navigate("/dashboard");
-} else {
-    alert(data.message);
-}
+
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+    } else {
+      alert(data.message);
+    }
   } catch (error) {
-   
+    console.error(error);
+    alert("Unable to connect to server");
   }
 }
 

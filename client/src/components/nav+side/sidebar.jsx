@@ -28,11 +28,11 @@ export default function Sidebar({
   return (
 <aside
   className={`
-    fixed top-0 left-0 z-50 h-screen w-64
+    fixed top-0 left-0 h-screen w-64 z-50
     bg-gradient-to-b from-lime-900 via-lime-800 to-lime-500
     transform transition-transform duration-300
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-    lg:translate-x-0 lg:static lg:flex lg:flex-col
+    lg:translate-x-0
   `}
 >
  <div className="relative">

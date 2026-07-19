@@ -24,19 +24,18 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="flex flex-col xl:flex-row gap-6 ">
+  <section className="flex flex-col xl:flex-row gap-6 items-stretch">
       {/* Left Side */}
       <div className="w-full xl:w-2/3">
         <WeatherCard weather={weather} />
       </div>
 
       {/* Right Side */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-6">
-        <div className="bg-gradient-to-b from-lime-800 via-lime-700 to-lime-500 rounded-2xl shadow-md p-4">
-          <ActiveCrops />
-        </div>
-
-      </div>
+    <div className="w-full xl:w-1/3">
+  <div className="bg-gradient-to-b from-lime-800 via-lime-700 to-lime-500 rounded-2xl shadow-md p-5 h-[510px]">
+    <ActiveCrops />
+  </div>
+</div>
     </section>
   );
 }
