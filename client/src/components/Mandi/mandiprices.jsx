@@ -69,7 +69,7 @@ export default function MandiPrices({ crops = [] }) {
               <option value="Wheat">Wheat (Demo)</option>
             ) : (
               crops.map((c) => (
-                <option key={c._id} value={c.crop}>
+                <option key={c.id} value={c.crop}>
                   {c.crop}
                 </option>
               ))

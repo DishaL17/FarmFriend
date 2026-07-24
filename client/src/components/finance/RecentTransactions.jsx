@@ -50,7 +50,7 @@ export default function RecentTransactions({ transactions = [], loading = false 
             <tbody>
               {transactions.slice(0, 5).map((t) => (
                 <tr
-                  key={t._id}
+                  key={t.id}
                   className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
                 >
                   <td className="py-3.5 px-4 text-sm font-semibold text-slate-700 capitalize">

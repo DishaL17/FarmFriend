@@ -10,15 +10,31 @@ export default function Dashboard() {
   const [weather, setWeather] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    async function loadWeather() {
-      const data = await fetchWeather("Bhopal");
+useEffect(() => {
+  async function loadWeather() {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        console.error("User not found");
+        return;
+      }
+
+      const data = await fetchWeather(
+        user.latitude,
+        user.longitude,
+        user.location
+      );
+
       console.log(data);
       setWeather(data);
+    } catch (err) {
+      console.error("Failed to fetch weather:", err);
     }
+  }
 
-    loadWeather();
-  }, []);
+  loadWeather();
+}, []);
 
   return (
     <div className="flex min-h-screen bg-lime-50">

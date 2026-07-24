@@ -6,8 +6,11 @@ import {
   FaSeedling,
   FaPlus,
 } from "react-icons/fa6";
+import { useState } from "react";
+import TransactionModal from "./Transactions";
 
 export default function Finance({ transactions = [], crops = [] }) {
+    const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   // Calculate dynamic totals from transactions
   
   const totalIncome = transactions
@@ -62,38 +65,44 @@ export default function Finance({ transactions = [], crops = [] }) {
                     <FaPlus className="text-xs" />
                     Add Transaction
                   </button>
+                  {isTransactionModalOpen && (
+    <TransactionModal
+        onClose={() => setIsTransactionModalOpen(false)}
+        onSuccess={() => {
+            setIsTransactionModalOpen(false);
+            // reload transactions if needed
+        }}
+    />
+)}
                 </div>
 
     <div className="space-y-6">
       {/* Finance Cards Grid */}
-      <div className=" flex-wrap sm:flex gap-6 m-1 items-center justify-between ">
-        <FinanceCard
-          title="Income"
-          amount={totalIncome}
-          icon={<FaMoneyBillWave />}
-          bgColor="bg-blue-100"
-          iconColor="text-blue-600"
-        />
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-3">
+  <FinanceCard
+    title="Income"
+    amount={totalIncome}
+    icon={<FaMoneyBillWave />}
+    bgColor="bg-blue-100"
+    iconColor="text-blue-600"
+  />
 
-        <FinanceCard
-          title="Expense"
-          amount={totalExpense}
-          icon={<FaWallet />}
-          bgColor="bg-red-100"
-          iconColor="text-red-600"
-        />
+  <FinanceCard
+    title="Expense"
+    amount={totalExpense}
+    icon={<FaWallet />}
+    bgColor="bg-red-100"
+    iconColor="text-red-600"
+  />
 
-        <FinanceCard
-          title="Net Profit"
-          amount={netProfit}
-  
-          icon={<FaArrowTrendUp />}
-          bgColor="bg-green-100"
-          iconColor="text-green-600"
-        />
-
-        
-      </div>
+  <FinanceCard
+    title="Net Profit"
+    amount={netProfit}
+    icon={<FaArrowTrendUp />}
+    bgColor="bg-green-100"
+    iconColor="text-green-600"
+  />
+</div>
 
      
     </div>

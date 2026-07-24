@@ -12,7 +12,7 @@ import FogAnimation from "./animations/FogAnimation";
 import SnowAnimation from "./animations/SnowAnimation";
 
 export default function WeatherCard({ weather }) {
- 
+  console.log("Weather data:", weather);
   if (!weather) {
     return (
       <div className="flex items-center justify-center min-h-[300px] sm:min-h-[420px] sm:w-full lg:min-h-[520px] rounded-2xl bg-white shadow-lg">

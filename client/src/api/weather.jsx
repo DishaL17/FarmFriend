@@ -1,62 +1,47 @@
-const GEO_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 
-// Convert city name to latitude & longitude
-export async function getCoordinates(city) {
-  const cacheKey = `geo_${city.toLowerCase()}`;
-  const cached = localStorage.getItem(cacheKey);
-  if (cached) {
-    try {
-      return JSON.parse(cached);
-    } catch (e) {
-      // ignore parsing error and fetch fresh
-    }
+// =============================
+// Fetch Weather using Latitude & Longitude
+// =============================
+export async function fetchWeather(latitude, longitude, location) {
+  const lat = latitude !== undefined && latitude !== null && !isNaN(latitude) ? latitude : 23.2599;
+  const lon = longitude !== undefined && longitude !== null && !isNaN(longitude) ? longitude : 77.4126;
+
+  let loc = "Your Location";
+  if (location) {
+    // Capitalize words nicely (e.g. suhana, sehore -> Suhana, Sehore)
+    loc = location
+      .split(", ")
+      .map((word) => word.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "))
+      .join(", ");
   }
 
-  const res = await fetch(
-    `${GEO_URL}?name=${city}&count=1&language=en&format=json`
-  );
+  const cacheKey = `weather_${lat}_${lon}`;
 
-  const data = await res.json();
-
-  if (!data.results || data.results.length === 0) {
-    throw new Error("City not found");
-  }
-
-  const coords = {
-    latitude: data.results[0].latitude,
-    longitude: data.results[0].longitude,
-    name: data.results[0].name,
-    country: data.results[0].country,
-  };
-
-  localStorage.setItem(cacheKey, JSON.stringify(coords));
-  return coords;
-}
-
-// Get complete weather data
-export async function fetchWeather(city) {
-  const cacheKey = `weather_${city.toLowerCase()}`;
+  // Check cache
   const cached = localStorage.getItem(cacheKey);
+
   if (cached) {
     try {
       const { timestamp, data } = JSON.parse(cached);
+
       // Cache valid for 10 minutes
       if (Date.now() - timestamp < 10 * 60 * 1000) {
-        return data;
+        // Return cached weather data but override the city with current formatted location
+        return {
+          ...data,
+          city: loc,
+        };
       }
-    } catch (e) {
-      // ignore parsing error and fetch fresh
+    } catch (err) {
+      localStorage.removeItem(cacheKey);
     }
   }
 
-  const { latitude, longitude, name, country } =
-    await getCoordinates(city);
-
   const url =
     `${WEATHER_URL}` +
-    `?latitude=${latitude}` +
-    `&longitude=${longitude}` +
+    `?latitude=${lat}` +
+    `&longitude=${lon}` +
     `&current=` +
     `temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m` +
     `&hourly=` +
@@ -66,19 +51,22 @@ export async function fetchWeather(city) {
     `&forecast_days=7` +
     `&timezone=auto`;
 
-  const res = await fetch(url);
+  const response = await fetch(url);
 
-  if (!res.ok) {
+  if (!response.ok) {
     throw new Error("Unable to fetch weather");
   }
 
-  const weather = await res.json();
+  const weather = await response.json();
+
   const weatherData = {
-    city: name,
-    country,
+    city: loc,
+    latitude: lat,
+    longitude: lon,
     ...weather,
   };
 
+  // Save in cache
   localStorage.setItem(
     cacheKey,
     JSON.stringify({
