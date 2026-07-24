@@ -11,10 +11,12 @@ export default function AddCropPage() {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/addcrop", {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/crops", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           crop,
@@ -28,13 +30,12 @@ export default function AddCropPage() {
       }
 
       const data = await response.json();
-
       alert(data.message);
 
-      // Optional: clear the form
       setCrop("");
       setArea("");
       setDate("");
+      navigate("/dashboard");
 
     } catch (error) {
       console.error(error);
@@ -46,13 +47,13 @@ export default function AddCropPage() {
     <form onSubmit={handleSave}>
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6">Add Crop</h1>
-       <button
-  type="button"
-  onClick={() => navigate("/dashboard")}
-  className="fixed top-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg"
->
-  Back
-</button>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard")}
+          className="fixed top-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg"
+        >
+          Back
+        </button>
 
         <input
           type="text"
@@ -60,6 +61,7 @@ export default function AddCropPage() {
           onChange={(e) => setCrop(e.target.value)}
           placeholder="Crop Name"
           className="w-full border p-2 rounded mb-3"
+          required
         />
 
         <input
@@ -68,6 +70,7 @@ export default function AddCropPage() {
           onChange={(e) => setArea(e.target.value)}
           placeholder="Area"
           className="w-full border p-2 rounded mb-3"
+          required
         />
 
         <input
@@ -75,6 +78,7 @@ export default function AddCropPage() {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className="w-full border p-2 rounded mb-3"
+          required
         />
 
         <button

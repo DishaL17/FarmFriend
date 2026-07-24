@@ -11,7 +11,13 @@ export default function TransactionModal({ onClose, onSuccess }) {
   useEffect(() => {
     async function loadCrops() {
       try {
-        const res = await fetch("http://localhost:5000/crops");
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("http://localhost:5000/api/crops", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
         if (data.success && Array.isArray(data.crops)) {
           setCrops(data.crops);
@@ -33,10 +39,13 @@ export default function TransactionModal({ onClose, onSuccess }) {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/addtransaction", {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:5000/api/transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           crop,
@@ -45,7 +54,6 @@ export default function TransactionModal({ onClose, onSuccess }) {
           type,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);
       }
@@ -82,7 +90,7 @@ export default function TransactionModal({ onClose, onSuccess }) {
         >
           <option value="General">General (None)</option>
           {crops.map((c) => (
-            <option key={c._id} value={c.crop}>
+            <option key={c.id} value={c.crop}>
               {c.crop}
             </option>
           ))}
@@ -158,7 +166,6 @@ export default function TransactionModal({ onClose, onSuccess }) {
       </div>
     </form>
   );
-
 
   if (isModal) {
     return (
