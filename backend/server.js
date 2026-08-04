@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import locationRoutes from "./routes/locationRoutes.js";
+import mandiRoutes from "./routes/mandiprices.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/location", locationRoutes);
+app.use("/api/mandi", mandiRoutes);
 
 const PORT = process.env.PORT || 5000;
 

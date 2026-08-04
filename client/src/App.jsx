@@ -5,6 +5,7 @@ import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
 import Weather from "./pages/weather";
 import AddCropPage from "./components/crops/AddCropPage";   
+import Crops from "./pages/crops";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/weather" element={<Weather />} />
       <Route path="/add-crop" element={<AddCropPage />} />
+      <Route path="/crops" element={<Crops />} />
     </Routes>
   );
 }

@@ -30,11 +30,24 @@ export default function MandiPrices({ crops = [] }) {
         const formattedCropName =
           selectedCrop.charAt(0).toUpperCase() + selectedCrop.slice(1).toLowerCase();
 
-        const response = await fetch(`http://localhost:5000/api/mandi/${formattedCropName}`);
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `http://localhost:5000/api/mandi/${formattedCropName}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error(`HTTP Error: ${response.status}`);
         }
         const data = await response.json();
+        
+        // Log the first record in the browser console for debugging
+        console.log("First Mandi Price Record (Frontend):", data[0]);
+
         setPrices(data || []);
       } catch (err) {
         console.error("Failed to load mandi prices:", err);
@@ -103,8 +116,8 @@ export default function MandiPrices({ crops = [] }) {
                 key={index}
                 className="border border-slate-100 bg-slate-50/50 rounded-xl p-3.5 flex justify-between items-center hover:bg-slate-50 transition"
               >
-                <div className="flex gap-3 items-center">
-                  <div className="text-emerald-700 bg-emerald-100 p-2 rounded-lg">
+                <div className="flex gap-3 items-start">
+                  <div className="text-emerald-700 bg-emerald-100 p-2 rounded-lg mt-0.5">
                     <FaMapMarkerAlt className="text-sm" />
                   </div>
                   <div>
@@ -114,10 +127,29 @@ export default function MandiPrices({ crops = [] }) {
                     <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
                       {p.District}, {p.State}
                     </p>
+                    
+                    {/* Metadata tags to differentiate entries */}
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {p.Variety && (
+                        <span className="bg-slate-100 text-slate-600 text-[9px] px-1.5 py-0.5 rounded font-medium">
+                          {p.Variety}
+                        </span>
+                      )}
+                      {p.Grade && p.Grade !== "FAQ" && (
+                        <span className="bg-slate-100 text-slate-600 text-[9px] px-1.5 py-0.5 rounded font-medium">
+                          Grade: {p.Grade}
+                        </span>
+                      )}
+                      {p.Arrival_Date && (
+                        <span className="bg-emerald-50 text-emerald-700 text-[9px] px-1.5 py-0.5 rounded font-semibold">
+                          Date: {p.Arrival_Date}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="text-right">
+                <div className="text-right flex-shrink-0 ml-4">
                   <div className="flex items-center gap-1.5 justify-end">
                     <FaTag className="text-[10px] text-emerald-600" />
                     <span className="text-sm font-bold text-emerald-700">

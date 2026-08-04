@@ -13,7 +13,7 @@ export default function RecentTransactions({ transactions = [], loading = false 
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 border border-slate-100 flex flex-col h-full">
+    <div className="bg-white rounded-2xl shadow-md p-4  border border-slate-100 flex flex-col h-full">
       <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
         <span className="bg-emerald-100 p-2 rounded-lg text-emerald-700">
           <FaHistory className="text-lg" />
