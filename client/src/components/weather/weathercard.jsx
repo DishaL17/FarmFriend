@@ -139,9 +139,9 @@ export default function WeatherCard({ weather }) {
         </div>
 
         {/* Hourly Forecast */}
-        <div className="mt-6 w-full overflow-hidden">
-          <HourlyForecast forecast={weather.hourly} />
-        </div>
+       <div className="mt-6 w-full overflow-x-auto scrollbar scrollbar-thumb-lime-50 scrollbar-track-glass-200">
+  <HourlyForecast forecast={weather.hourly} />
+</div>
       </div>
     </div>
   );

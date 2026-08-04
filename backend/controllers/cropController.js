@@ -25,7 +25,17 @@ export const addCrop = async (req, res) => {
 export const getCrops = async (req, res) => {
   try {
     const [crops] = await db.query(
-      "SELECT * FROM crops WHERE userId = ?",
+      `SELECT
+        c.*,
+        ci.sprout_day,
+        ci.vegetative_day,
+        ci.flowering_day,
+        ci.harvest_day,
+        ci.irrigation_days
+      FROM crops c
+      LEFT JOIN crop_info ci
+        ON LOWER(c.crop) = LOWER(ci.crop_name)
+      WHERE c.userId = ?`,
       [req.userId]
     );
 
