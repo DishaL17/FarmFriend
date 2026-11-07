@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config/api";
+
 export async function getTransactions() {
   const token = localStorage.getItem("token");
 
-  const response = await fetch("http://localhost:5000/api/transactions", {
+  const response = await fetch(`${API_BASE_URL}/transactions`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -19,10 +19,9 @@ export default function Sidebar({
     { name: "Dashboard", icon: FaHome, path: "/dashboard" },
     { name: "My Crops", icon: FaSeedling, path: "/crops" },
     { name: "Finance", icon: FaWallet, path: "/finance" },
-    { name: "Marketplace", icon: FaStore, path: "/market" },
     { name: "Weather", icon: FaCloudSun, path: "/weather" },
-    { name: "Equipment", icon: FaTractor, path: "/equipment" },
-    { name: "Settings", icon: FaCog, path: "/settings" },
+   
+   
   ];
 
   return (

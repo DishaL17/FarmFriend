@@ -18,13 +18,21 @@ export default async function (req, res, next) {
       return res.status(401).json({ message: "Invalid Token" });
     }
 
-    const [users] = await db.query("SELECT id FROM users WHERE id = ?", [userId]);
-    if (users.length === 0) {
-      return res.status(401).json({ message: "User not found, please log in again" });
-    }
+   const [users] = await db.query(
+  "SELECT id, is_demo FROM users WHERE id = ?",
+  [userId]
+);
 
-    req.userId = userId;
-    next();
+if (users.length === 0) {
+  return res.status(401).json({
+    message: "User not found, please log in again"
+  });
+}
+
+req.userId = userId;
+req.isDemo = Boolean(users[0].is_demo);
+
+next();
   } catch (err) {
     res.status(401).json({
       message: "Invalid Token",

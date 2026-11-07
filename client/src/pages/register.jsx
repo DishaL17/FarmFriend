@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar/navbar";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ useEffect(() => {
 async function fetchDistricts() {
   try {
     const response = await fetch(
-      "http://localhost:5000/api/location/districts"
+      `${API_BASE_URL}/api/location/districts`
     );
 
     const data = await response.json();
@@ -34,7 +35,7 @@ async function fetchDistricts() {
 async function fetchVillages(districtId) {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/location/villages/${districtId}`
+      `${API_BASE_URL}/api/location/villages/${districtId}`
     );
 
     const data = await response.json();
@@ -51,7 +52,7 @@ async function fetchVillages(districtId) {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

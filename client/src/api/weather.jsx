@@ -3,7 +3,7 @@ const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 // =============================
 // Fetch Weather using Latitude & Longitude
 // =============================
-export async function fetchWeather(latitude, longitude, location) {
+export async function fetchWeather(latitude, longitude, location, bypassCache = false) {
   const lat = latitude !== undefined && latitude !== null && !isNaN(latitude) ? latitude : 23.2599;
   const lon = longitude !== undefined && longitude !== null && !isNaN(longitude) ? longitude : 77.4126;
 
@@ -18,23 +18,24 @@ export async function fetchWeather(latitude, longitude, location) {
 
   const cacheKey = `weather_${lat}_${lon}`;
 
-  // Check cache
-  const cached = localStorage.getItem(cacheKey);
+  // Check cache unless bypass requested
+  if (!bypassCache) {
+    const cached = localStorage.getItem(cacheKey);
 
-  if (cached) {
-    try {
-      const { timestamp, data } = JSON.parse(cached);
+    if (cached) {
+      try {
+        const { timestamp, data } = JSON.parse(cached);
 
-      // Cache valid for 10 minutes
-      if (Date.now() - timestamp < 10 * 60 * 1000) {
-        // Return cached weather data but override the city with current formatted location
-        return {
-          ...data,
-          city: loc,
-        };
+        // Cache valid for 10 minutes
+        if (Date.now() - timestamp < 10 * 60 * 1000) {
+          return {
+            ...data,
+            city: loc,
+          };
+        }
+      } catch (err) {
+        localStorage.removeItem(cacheKey);
       }
-    } catch (err) {
-      localStorage.removeItem(cacheKey);
     }
   }
 
@@ -43,11 +44,11 @@ export async function fetchWeather(latitude, longitude, location) {
     `?latitude=${lat}` +
     `&longitude=${lon}` +
     `&current=` +
-    `temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m` +
+    `temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,precipitation,surface_pressure` +
     `&hourly=` +
-    `temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m` +
+    `temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,precipitation_probability` +
     `&daily=` +
-    `weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset` +
+    `weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,et0_fao_evapotranspiration` +
     `&forecast_days=7` +
     `&timezone=auto`;
 
@@ -67,13 +68,17 @@ export async function fetchWeather(latitude, longitude, location) {
   };
 
   // Save in cache
-  localStorage.setItem(
-    cacheKey,
-    JSON.stringify({
-      timestamp: Date.now(),
-      data: weatherData,
-    })
-  );
+  try {
+    localStorage.setItem(
+      cacheKey,
+      JSON.stringify({
+        timestamp: Date.now(),
+        data: weatherData,
+      })
+    );
+  } catch (e) {
+    // ignore quota issues
+  }
 
   return weatherData;
 }

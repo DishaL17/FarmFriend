@@ -10,6 +10,7 @@ import TransactionModal from "./Transactions";
 
 export default function Finance({ transactions = [], crops = [], onTransactionAdded }) {
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+    const [aiRefreshKey, setAiRefreshKey] = useState(0);
 
   const totalIncome = transactions
     .filter((t) => t.type && t.type.toLowerCase() === "income")
@@ -34,12 +35,18 @@ export default function Finance({ transactions = [], crops = [], onTransactionAd
         </button>
         {isTransactionModalOpen && (
           <TransactionModal
-            onClose={() => setIsTransactionModalOpen(false)}
-            onSuccess={() => {
-              setIsTransactionModalOpen(false);
-              if (onTransactionAdded) onTransactionAdded();
-            }}
-          />
+  onClose={() => setIsTransactionModalOpen(false)}
+  onSuccess={() => {
+    setIsTransactionModalOpen(false);
+
+    if (onTransactionAdded) {
+      onTransactionAdded();
+    }
+
+    // Refresh AI recommendations
+    setAiRefreshKey((prev) => prev + 1);
+  }}
+/>
         )}
       </div>
 

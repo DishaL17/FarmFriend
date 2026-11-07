@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWeather } from "../../api/weather";
+import { API_BASE_URL } from "../../config/api";
 
 import WeatherCard from "../weather/weathercard";
 import ActiveCrops from "../crops/activecrop";
@@ -16,7 +17,7 @@ export default function Hero() {
         if (token) {
           // Attempt to fetch fresh profile details to guarantee we have coordinates and location names
           try {
-            const res = await fetch("http://localhost:5000/api/auth/me", {
+            const res = await fetch(`${API_BASE_URL}/auth/me`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },

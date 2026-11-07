@@ -31,11 +31,11 @@ export default function Dashboard() {
       ]);
 
       if (transactionData.success) {
-        setTransactions(transactionData.transactions);
+        setTransactions(transactionData.transactions || []);
       }
 
       if (cropData.success) {
-        setCrops(cropData.crops);
+        setCrops(cropData.crops || []);
       }
     } catch (err) {
       console.error("Dashboard loading failed:", err);

@@ -137,3 +137,56 @@ export const me = async (req, res) => {
     });
   }
 };
+export const demoLogin = async (req, res) => {
+try {
+// Find the demo account
+const [users] = await db.query(
+"SELECT * FROM users WHERE is_demo = TRUE LIMIT 1"
+);
+
+
+if (users.length === 0) {
+  return res.status(404).json({
+    success: false,
+    message: "Demo account is not configured yet",
+  });
+}
+
+const user = users[0];
+
+// Generate JWT for demo account
+const token = jwt.sign(
+  { id: user.id },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
+res.json({
+  success: true,
+  token,
+  user: {
+    id: user.id,
+    name: user.name,
+    phone: user.phone,
+    state: user.state,
+    district: user.district,
+    location: user.location,
+    latitude: user.latitude,
+    longitude: user.longitude,
+    isDemo: true,
+  },
+});
+
+
+} catch (err) {
+console.error("Demo login error:", err);
+
+
+res.status(500).json({
+  success: false,
+  message: "Server Error",
+});
+
+
+}
+};

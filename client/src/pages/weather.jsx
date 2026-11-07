@@ -5,56 +5,92 @@ import Nav from "../components/nav+side/nav";
 import Sidebar from "../components/nav+side/sidebar";
 import WeatherCard from "../components/weather/weathercard";
 import WeeklyForecast from "../components/weather/weeklyforecast";
+import FarmingWeatherAdvisory from "../components/weather/FarmingWeatherAdvisory";
+import AgriculturalMetricsGrid from "../components/weather/AgriculturalMetricsGrid";
+import LocationHeaderBar from "../components/weather/LocationHeaderBar";
 
-export default function Dashboard() {
+export default function Weather() {
   const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [coords, setCoords] = useState(null);
 
-useEffect(() => {
-  async function loadWeather() {
+  useEffect(() => {
+    loadWeather();
+  }, []);
+
+  async function loadWeather(customLat, customLon, bypassCache = false) {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user")) || {};
 
-      if (!user) {
-        console.error("User not found");
-        return;
-      }
+      const lat =
+        customLat !== undefined && customLat !== null
+          ? customLat
+          : user.latitude ?? 23.2599;
 
-      const data = await fetchWeather(
-        user.latitude,
-        user.longitude,
-        user.location
-      );
+      const lon =
+        customLon !== undefined && customLon !== null
+          ? customLon
+          : user.longitude ?? 77.4126;
 
-      console.log(data);
+      const locName = user.location || user.district || "Farm Location";
+
+      setCoords({ lat, lon });
+
+      const data = await fetchWeather(lat, lon, locName, bypassCache);
       setWeather(data);
     } catch (err) {
       console.error("Failed to fetch weather:", err);
+    } finally {
+      setLoading(false);
     }
   }
 
-  loadWeather();
-}, []);
+  const handleUseGps = (lat, lon) => {
+    loadWeather(lat, lon, true);
+  };
+
+  const handleRefresh = () => {
+    loadWeather(coords?.lat, coords?.lon, true);
+  };
 
   return (
     <div className="flex min-h-screen bg-lime-50">
       <Sidebar
-              isSidebarOpen={isSidebarOpen}
-              setIsSidebarOpen={setIsSidebarOpen}
-            />
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
-      <main className="flex-1 flex flex-col w-full overflow-x-hidden ">
+      <main className="flex-1 flex flex-col lg:ml-64 bg-lime-50 min-w-0">
         <Nav setIsSidebarOpen={setIsSidebarOpen} />
 
-        <section className="flex flex-col xl:flex-row gap-6 p-6">
-          <div className="w-full xl:w-2/3">
-            <WeatherCard weather={weather} />
+        <div className="flex-1 p-4 sm:p-6 space-y-6">
+          {/* Location & GPS Header Bar */}
+          <LocationHeaderBar
+            weather={weather}
+            onRefresh={handleRefresh}
+            onUseGps={handleUseGps}
+            loading={loading}
+          />
+
+          {/* Top Hero Section: Today's Weather & 7-Day Forecast */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch">
+            <div className="xl:col-span-2">
+              <WeatherCard weather={weather} />
+            </div>
+
+            <div className="xl:col-span-1">
+              <WeeklyForecast daily={weather?.daily} />
+            </div>
           </div>
 
-          <div className="w-full xl:w-1/3">
-            <WeeklyForecast daily={weather?.daily} />
-          </div>
-        </section>
+          {/* Agricultural Field Operations & AI Weather Advisory */}
+          <FarmingWeatherAdvisory weather={weather} />
+
+          {/* Key Agricultural Meteorological Metrics */}
+          <AgriculturalMetricsGrid weather={weather} />
+        </div>
       </main>
     </div>
   );

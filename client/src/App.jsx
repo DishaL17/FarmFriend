@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard";
 import Weather from "./pages/weather";
 import AddCropPage from "./components/crops/AddCropPage";   
 import Crops from "./pages/crops";
+import Finance from "./pages/finance";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/weather" element={<Weather />} />
       <Route path="/add-crop" element={<AddCropPage />} />
       <Route path="/crops" element={<Crops />} />
+      <Route path="/finance" element={<Finance />} />
     </Routes>
   );
 }
